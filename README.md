@@ -4,7 +4,7 @@ An enterprise-style Identity &amp; Access Management (IAM) operations lab simula
 ## Purpose
 This repository documents a multi-phase, enterprise-style IAM lab designed to simulate how identity is governed, secured, and operated in real organizations.
 
-The goal is to demonstrate practical IAM decision-making, documentation, and operational thinking — not just feature configuration.
+The goal is to demonstrate practical IAM decision-making, documentation, and operational thinking not just feature configuration.
 
 ## Scope
 This lab covers:
