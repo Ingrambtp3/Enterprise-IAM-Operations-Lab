@@ -3,9 +3,9 @@
 **Phase:** 7 — Automation & IaC  **Tenant:** ByteKage (ByteKage.onmicrosoft.com)  **Tool:** Ansible  **Target:** Microsoft Entra ID via Graph API  **Status:** ✅ Configured and tested (idempotency verified)  **Date:** 2026-06-06
 
 ## What This Is
-An Ansible playbook that automates employee offboarding against Entra ID. When a user leaves, it disables their account, strips every group membership, and writes an audit log — the same way, every time.
+An Ansible playbook that automates employee offboarding against Entra ID. When a user leaves, it disables their account, strips every group membership, and writes an audit log the same way, every time.
 
-This is the configuration-management companion to the Terraform work in this phase. Terraform provisions identity infrastructure (creates users and groups). Ansible configures and acts on what already exists (disables a user, removes memberships, runs the offboarding sequence). Provision vs. configure — two different jobs. It also operationalizes the Phase 4 "Account disable (Leaver)" runbook.
+This is the configuration-management companion to the Terraform work in this phase. Terraform provisions identity infrastructure (creates users and groups). Ansible configures and acts on what already exists (disables a user, removes memberships, runs the offboarding sequence). Provision vs. configure two different jobs. It also operationalizes the Phase 4 "Account disable (Leaver)" runbook.
 
 ## What It Does
 1. Gets a Graph access token from the local Azure CLI session
@@ -26,6 +26,10 @@ The actions use Ansible's uri module to call Graph directly. The uri module repo
 
 ## Status
 ✅ Configured and tested against a dedicated throwaway test account. Disable and group-removal confirmed directly in Entra. Idempotency proven across two runs.
+
+##Screenshots 📸
+<img width="1374" height="632" alt="Screenshot 2026-06-07 at 1 09 22 PM" src="https://github.com/user-attachments/assets/804726e8-f0c9-4e53-bf47-b233cef271f0" />
+
 
 ## Related Phases
 - Operationalizes: Phase 4 "Account disable (Leaver)" runbook
