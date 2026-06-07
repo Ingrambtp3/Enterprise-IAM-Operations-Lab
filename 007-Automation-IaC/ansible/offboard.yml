@@ -1,0 +1,96 @@
+---
+# Offboarding playbook — disables a leaver and strips group memberships.
+# Phase 7 (IaC/Automation) + ties to Phase 4 "Account disable (Leaver)" runbook.
+- name: Offboard a leaver (disable account + remove group memberships)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    leaver_upn: "test.leaver@ByteKage.onmicrosoft.com"
+    graph_base: "https://graph.microsoft.com/v1.0"
+
+  tasks:
+    - name: Get a Microsoft Graph access token from the Azure CLI
+      ansible.builtin.command: az account get-access-token --resource-type ms-graph --query accessToken -o tsv
+      register: token_cmd
+      changed_when: false
+
+    - name: Store the token for reuse
+      ansible.builtin.set_fact:
+        graph_token: "{{ token_cmd.stdout }}"
+
+    - name: Look up the leaver by UPN
+      ansible.builtin.uri:
+        url: "{{ graph_base }}/users/{{ leaver_upn }}?$select=id,displayName,accountEnabled"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ graph_token }}"
+        return_content: true
+        status_code: 200
+      register: user_info
+
+    - name: Show the leaver's current state (before)
+      ansible.builtin.debug:
+        msg: "BEFORE: {{ user_info.json.displayName }} | enabled={{ user_info.json.accountEnabled }} | id={{ user_info.json.id }}"
+
+    - name: Get the leaver's group memberships
+      ansible.builtin.uri:
+        url: "{{ graph_base }}/users/{{ leaver_upn }}/memberOf?$select=id,displayName"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ graph_token }}"
+        return_content: true
+        status_code: 200
+      register: groups_info
+
+    - name: Disable the leaver's account
+      ansible.builtin.uri:
+        url: "{{ graph_base }}/users/{{ leaver_upn }}"
+        method: PATCH
+        headers:
+          Authorization: "Bearer {{ graph_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          accountEnabled: false
+        status_code: 204
+      when: user_info.json.accountEnabled | bool
+      changed_when: user_info.json.accountEnabled | bool
+      register: disable_result
+
+    - name: Report whether a disable was needed
+      ansible.builtin.debug:
+        msg: "{{ 'Account was enabled — now disabled.' if (user_info.json.accountEnabled | bool) else 'Account already disabled — no change made.' }}"
+
+    - name: Remove the leaver from each group
+      ansible.builtin.uri:
+        url: "{{ graph_base }}/groups/{{ item.id }}/members/{{ user_info.json.id }}/$ref"
+        method: DELETE
+        headers:
+          Authorization: "Bearer {{ graph_token }}"
+        status_code: [204, 404]
+      loop: "{{ groups_info.json.value }}"
+      loop_control:
+        label: "{{ item.displayName }}"
+      changed_when: removal_result is not defined or true
+      register: removal_result
+
+    - name: Write an audit log entry
+      ansible.builtin.copy:
+        dest: "logs/offboard-last-run.log"
+        content: |
+          ===== OFFBOARDING RUN =====
+          Timestamp (UTC): {{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}
+          Leaver UPN:      {{ leaver_upn }}
+          Object ID:       {{ user_info.json.id }}
+          Before:          accountEnabled={{ user_info.json.accountEnabled }}
+          Action taken:    {{ 'DISABLED account' if (user_info.json.accountEnabled | bool) else 'account already disabled (no change)' }}
+          Groups found:    {{ groups_info.json.value | map(attribute='displayName') | list }}
+          Groups removed:  {{ groups_info.json.value | length }} membership(s) processed
+          ===========================
+      register: log_written
+
+    - name: Confirm completion
+      ansible.builtin.debug:
+        msg: "Offboarding complete for {{ leaver_upn }}. Audit log written to logs/offboard-last-run.log"
