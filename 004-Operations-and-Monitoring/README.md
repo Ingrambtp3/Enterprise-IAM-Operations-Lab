@@ -417,7 +417,9 @@ itself the alert.
   scrutiny.
 **Owner:** Highest-priority escalation — Security leadership / IAM lead, not
 standard Tier 1 operations.
- 
+
+ **SCREENSHOTS** 
+ see the Screenshots folder
 ---
  
 ## Related Phases
