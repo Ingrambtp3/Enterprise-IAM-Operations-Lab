@@ -419,7 +419,18 @@ itself the alert.
 standard Tier 1 operations.
 
  **SCREENSHOTS** 
- see the Screenshots folder
+ 
+<img width="1103" height="244" alt="audit-log-list-view" src="https://github.com/user-attachments/assets/2ca49585-2046-459a-9c32-a01cb30ca9d7" />
+<img width="680" height="623" alt="audit-log-activity-redacted" src="https://github.com/user-attachments/assets/741adf1f-b689-4e6f-ac15-2bd77698871a" />
+<img width="781" height="341" alt="audit-log-modified-properties-redacted" src="https://github.com/user-attachments/assets/44b22dff-2a85-4ae2-9e7f-686fde655d92" />
+<img width="685" height="589" alt="audit-log-target-details-redacted" src="https://github.com/user-attachments/assets/f296a0ea-fcda-42d1-adbc-411b15aae8da" />
+<img width="559" height="592" alt="audit-log2-activity-redacted" src="https://github.com/user-attachments/assets/c42d586a-e608-4111-83a6-7e6c862bb156" />
+<img width="461" height="351" alt="audit-log2-target-redacted" src="https://github.com/user-attachments/assets/55440e5d-1cae-4867-8ca1-d2e20696ed0e" />
+<img width="829" height="370" alt="audit-log2-modified-properties" src="https://github.com/user-attachments/assets/0ca0bb26-7cb8-4121-a3a1-00db446f2147" />
+<img width="817" height="624" alt="signin-basic-info-redacted" src="https://github.com/user-attachments/assets/3246be6d-3748-4020-aec7-1e2274b600e8" />
+<img width="839" height="345" alt="signin-conditional-access" src="https://github.com/user-attachments/assets/2238e33a-81ff-4f2d-9711-24ab58eb04f7" />
+<img width="695" height="376" alt="signin-reportonly-policy-detail" src="https://github.com/user-attachments/assets/c20769b8-cb2a-41e1-81c0-5fed52f13c9c" />
+
 ---
  
 ## Related Phases
